@@ -32,6 +32,57 @@ async function run() {
 
     try {
 
+        const usersCollection = client.db("TechBook").collection("users");
+        const postCollection = client.db("TechBook").collection("posts");
+
+        // users
+
+        // Post a user
+        app.post("/users", async (req, res) => {
+            const query = req.body;
+            const result = await usersCollection.insertOne(query);
+            res.send(result);
+        });
+
+        // PUT -- Update a User
+        app.put("/users", async (req, res) => {
+            const userName = req.body.userName;
+            const data = req.body;
+            const query = { userName: userName };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    userName: data.userName,
+                    userEmail: data.userEmail,
+                    userPhoto: data.userPhoto,
+                    university: data.university,
+                    address: data.address,
+                    Phone: data.Phone,
+                    Birthday: data.Birthday,
+                    Gender: data.Gender,
+                },
+            };
+            const result = await userCollection.updateOne(query, updateDoc, options);
+            res.send(result);
+        });
+
+
+        // posts
+
+        // Post a Post
+        app.post("/posts", async (req, res) => {
+            const query = req.body;
+            const result = await postCollection.insertOne(query);
+            res.send(result);
+        });
+
+        // Get all Post
+        app.get("/posts", async (req, res) => {
+            const query = {};
+            const result = await postCollection.find(query).toArray();
+            res.send(result);
+        });
+
     }
 
     // 
